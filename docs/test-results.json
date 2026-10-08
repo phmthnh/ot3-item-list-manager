@@ -1,0 +1,179 @@
+{
+  "exercise": "3",
+  "culture": "vi-VN",
+  "results": [
+    {
+      "name": "duplicate_on_add",
+      "pass": true,
+      "actual": "OK\r\n\r\nMã vật tư 'vt01' đã tồn tại trong danh sách."
+    },
+    {
+      "name": "duplicate_not_added",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "add_two",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "selection_price",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "price_roundtrip",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "duplicate_on_update",
+      "pass": true,
+      "actual": "OK\r\n\r\nMã vật tư 'VT01' đã tồn tại trong danh sách."
+    },
+    {
+      "name": "update_preserves_codes",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "update_allowed",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "delete_no",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa vật tư 'Chuột'?"
+    },
+    {
+      "name": "cancel_delete",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "delete_yes",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa vật tư 'Chuột'?"
+    },
+    {
+      "name": "confirmed_delete",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "clear_all_no",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa TOÀN BỘ danh sách?"
+    },
+    {
+      "name": "cancel_clear",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "clear_all_yes",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa TOÀN BỘ danh sách?"
+    },
+    {
+      "name": "confirmed_clear",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "model_synced_after_delete",
+      "pass": true,
+      "actual": null
+    }
+  ],
+  "date": "2026-10-08",
+  "en-US": [
+    {
+      "name": "duplicate_on_add",
+      "pass": true,
+      "actual": "OK\r\n\r\nMã vật tư 'vt01' đã tồn tại trong danh sách."
+    },
+    {
+      "name": "duplicate_not_added",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "add_two",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "selection_price",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "price_roundtrip",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "duplicate_on_update",
+      "pass": true,
+      "actual": "OK\r\n\r\nMã vật tư 'VT01' đã tồn tại trong danh sách."
+    },
+    {
+      "name": "update_preserves_codes",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "update_allowed",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "delete_no",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa vật tư 'Chuột'?"
+    },
+    {
+      "name": "cancel_delete",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "delete_yes",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa vật tư 'Chuột'?"
+    },
+    {
+      "name": "confirmed_delete",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "clear_all_no",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa TOÀN BỘ danh sách?"
+    },
+    {
+      "name": "cancel_clear",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "clear_all_yes",
+      "pass": true,
+      "actual": "&Yes\r\n&No\r\n\r\nBạn có chắc muốn xóa TOÀN BỘ danh sách?"
+    },
+    {
+      "name": "confirmed_clear",
+      "pass": true,
+      "actual": null
+    },
+    {
+      "name": "model_synced_after_delete",
+      "pass": true,
+      "actual": null
+    }
+  ]
+}

@@ -1,120 +1,118 @@
+using System.Globalization;
+
 namespace ItemListManager
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        private readonly List<MaterialItem> _items = new();
+
+        public MainForm() { InitializeComponent(); }
+
+        private bool IsDuplicateCode(string code, MaterialItem? except = null)
         {
-            InitializeComponent();
+            return _items.Any(item => !ReferenceEquals(item, except)
+                && item.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
         }
 
-        // --- Thêm mới ---
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void ShowDuplicateCode(string code)
         {
-            if (!ValidateInputs(out string code, out string name, out string unit, out decimal price))
-                return;
+            MessageBox.Show(this, $"Mã vật tư '{code}' đã tồn tại trong danh sách.", "Trùng mã",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtCode.Focus();
+        }
 
-            // Kiểm tra mã trùng
-            foreach (ListViewItem item in lvItems.Items)
-            {
-                if (item.Text.Equals(code, StringComparison.OrdinalIgnoreCase))
-                {
-                    MessageBox.Show($"Mã vật tư '{code}' đã tồn tại trong danh sách.", "Trùng mã",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtCode.Focus();
-                    return;
-                }
-            }
+        private static string[] DisplayValues(MaterialItem item)
+        {
+            return new[] { item.Code, item.Name, item.Unit, item.Price.ToString("N0") };
+        }
 
-            var row = new ListViewItem(new[] { code, name, unit, price.ToString("N0") });
-            lvItems.Items.Add(row);
+        private void btnAdd_Click(object? sender, EventArgs e)
+        {
+            if (!ValidateInputs(out var code, out var name, out var unit, out var price)) return;
+            if (IsDuplicateCode(code)) { ShowDuplicateCode(code); return; }
+            var item = new MaterialItem(code, name, unit, price);
+            _items.Add(item);
+            lvItems.Items.Add(new ListViewItem(DisplayValues(item)) { Tag = item });
             ClearForm();
         }
 
-        // --- Cập nhật ---
-        private void btnUpdate_Click(object sender, EventArgs e)
+        private void btnUpdate_Click(object? sender, EventArgs e)
         {
             if (lvItems.SelectedItems.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn một dòng cần cập nhật.", "Chưa chọn dòng",
+                MessageBox.Show(this, "Vui lòng chọn một dòng cần cập nhật.", "Chưa chọn dòng",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            if (!ValidateInputs(out string code, out string name, out string unit, out decimal price))
-                return;
-
-            var sel = lvItems.SelectedItems[0];
-            sel.SubItems[0].Text = code;
-            sel.SubItems[1].Text = name;
-            sel.SubItems[2].Text = unit;
-            sel.SubItems[3].Text = price.ToString("N0");
+            if (!ValidateInputs(out var code, out var name, out var unit, out var price)) return;
+            var row = lvItems.SelectedItems[0];
+            var oldItem = (MaterialItem)row.Tag!;
+            if (IsDuplicateCode(code, oldItem)) { ShowDuplicateCode(code); return; }
+            var item = new MaterialItem(code, name, unit, price);
+            _items[_items.IndexOf(oldItem)] = item;
+            row.Tag = item;
+            var values = DisplayValues(item);
+            for (int i = 0; i < values.Length; i++) row.SubItems[i].Text = values[i];
             ClearForm();
         }
 
-        // --- Xóa dòng ---
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object? sender, EventArgs e)
         {
             if (lvItems.SelectedItems.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn một dòng cần xóa.", "Chưa chọn dòng",
+                MessageBox.Show(this, "Vui lòng chọn một dòng cần xóa.", "Chưa chọn dòng",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-
-            var sel = lvItems.SelectedItems[0];
-            var confirm = MessageBox.Show($"Bạn có chắc muốn xóa vật tư '{sel.SubItems[1].Text}'?",
-                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirm == DialogResult.Yes)
-            {
-                lvItems.Items.Remove(sel);
-                ClearForm();
-            }
+            var row = lvItems.SelectedItems[0];
+            if (MessageBox.Show(this, $"Bạn có chắc muốn xóa vật tư '{row.SubItems[1].Text}'?",
+                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            _items.Remove((MaterialItem)row.Tag!);
+            lvItems.Items.Remove(row);
+            ClearForm();
         }
 
-        // --- Xóa toàn bộ ---
-        private void btnClearAll_Click(object sender, EventArgs e)
+        private void btnClearAll_Click(object? sender, EventArgs e)
         {
-            if (lvItems.Items.Count == 0) return;
-            var confirm = MessageBox.Show("Bạn có chắc muốn xóa TOÀN BỘ danh sách?",
-                "Xác nhận xóa tất cả", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (confirm == DialogResult.Yes)
-            {
-                lvItems.Items.Clear();
-                ClearForm();
-            }
+            if (_items.Count == 0) return;
+            if (MessageBox.Show(this, "Bạn có chắc muốn xóa TOÀN BỘ danh sách?", "Xác nhận xóa tất cả",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            _items.Clear();
+            lvItems.Items.Clear();
+            ClearForm();
         }
 
-        // --- Click chọn dòng → nạp ngược form ---
-        private void lvItems_SelectedIndexChanged(object sender, EventArgs e)
+        private void lvItems_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lvItems.SelectedItems.Count == 0) return;
-            var sel = lvItems.SelectedItems[0];
-            txtCode.Text  = sel.SubItems[0].Text;
-            txtName.Text  = sel.SubItems[1].Text;
-            cboUnit.Text  = sel.SubItems[2].Text;
-            txtPrice.Text = sel.SubItems[3].Text.Replace(",", "");
+            var item = (MaterialItem)lvItems.SelectedItems[0].Tag!;
+            txtCode.Text = item.Code;
+            txtName.Text = item.Name;
+            cboUnit.SelectedItem = item.Unit;
+            txtPrice.Text = item.Price.ToString(CultureInfo.CurrentCulture);
         }
 
         private bool ValidateInputs(out string code, out string name, out string unit, out decimal price)
         {
-            code = txtCode.Text.Trim();
-            name = txtName.Text.Trim();
-            unit = cboUnit.Text.Trim();
-            price = 0;
-
-            if (string.IsNullOrEmpty(code))
+            code = txtCode.Text.Trim(); name = txtName.Text.Trim(); unit = cboUnit.Text; price = 0;
+            if (string.IsNullOrWhiteSpace(code))
             {
-                MessageBox.Show("Vui lòng nhập Mã vật tư.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Vui lòng nhập Mã vật tư.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtCode.Focus(); return false;
             }
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Vui lòng nhập Tên vật tư.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Vui lòng nhập Tên vật tư.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtName.Focus(); return false;
+            }
+            if (cboUnit.SelectedIndex < 0)
+            {
+                MessageBox.Show(this, "Vui lòng chọn Đơn vị tính.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboUnit.Focus(); return false;
             }
             if (!decimal.TryParse(txtPrice.Text.Trim(), out price) || price <= 0)
             {
-                MessageBox.Show("Vui lòng nhập Đơn giá hợp lệ (số dương).", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Vui lòng nhập Đơn giá hợp lệ (số dương).", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtPrice.Focus(); return false;
             }
             return true;
@@ -122,11 +120,8 @@ namespace ItemListManager
 
         private void ClearForm()
         {
-            txtCode.Clear();
-            txtName.Clear();
-            cboUnit.SelectedIndex = 0;
-            txtPrice.Clear();
-            txtCode.Focus();
+            foreach (ListViewItem row in lvItems.SelectedItems) row.Selected = false;
+            txtCode.Clear(); txtName.Clear(); cboUnit.SelectedIndex = 0; txtPrice.Clear(); txtCode.Focus();
         }
     }
 }

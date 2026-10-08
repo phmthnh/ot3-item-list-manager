@@ -172,6 +172,9 @@ namespace ItemListManager
             // lvItems
             this.lvItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { this.colCode, this.colName, this.colUnit, this.colPrice });
             this.lvItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvItems.Location = new System.Drawing.Point(3, 19);
+            this.lvItems.Size = new System.Drawing.Size(554, 408);
+            this.lvItems.MultiSelect = false;
             this.lvItems.FullRowSelect = true;
             this.lvItems.GridLines = true;
             this.lvItems.HideSelection = false;
@@ -206,6 +209,7 @@ namespace ItemListManager
             this.grpInput.ResumeLayout(false);
             this.grpInput.PerformLayout();
             this.grpList.ResumeLayout(false);
+            this.grpList.PerformLayout();
             this.ResumeLayout(false);
         }
 
